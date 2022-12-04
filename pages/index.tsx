@@ -9,6 +9,7 @@ import getRemainingPins from '../application/getRemainingPins'
 import Frame, { IFrame, IRoll } from '../components/Frame'
 import isStrike from '../application/isStrike'
 import isSpare from '../application/isSpare'
+import isLastFrame from '../application/isLastFrame'
 
 export default function Home() {
   const [rolls, setRolls] = useState<IRoll[]>([]);
@@ -16,14 +17,13 @@ export default function Home() {
   const frames = getFrames(rolls);
   const currentFrameIndex = useMemo(() => getCurrentFrameIndex(rolls), [rolls]);
   const currentFrame = frames[currentFrameIndex];
-  const isLastFrame = currentFrameIndex === 9;
   const [roll1, roll2] = currentFrame;
   const remainingPins = getRemainingPins((roll2 || roll1) as number);
 
   const onClickRoll = (pins: number) => {
     setRolls(state => {
       const newState = [...state, pins];
-      if (pins === 10 && !isLastFrame) newState.push(0);
+      if (pins === 10 && !isLastFrame(currentFrameIndex)) newState.push(0);
       return [...newState];
     });
   }
