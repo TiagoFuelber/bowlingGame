@@ -1,0 +1,19 @@
+.roll {
+  display: inline-block;
+  width: 40px;
+}
+
+.roll,
+.points {
+  border: 1px solid darkslategray;
+  padding: 5px 10px;
+  text-align: center;
+}
+
+.points {
+  display: block;
+}
+
+.rolled {
+  background: lightgray;
+}

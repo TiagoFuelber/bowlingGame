@@ -1,8 +1,35 @@
+import { useMemo, useState } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
+import getFrames from '../application/getFrames'
 import styles from '../styles/Home.module.css'
+import getPointsForFrame from '../application/getPointsForFrame'
+import getCurrentFrameIndex from '../application/getCurrentFrameIndex.ts'
+import getRemainingPins from '../application/getRemainingPins'
+import Frame, { IFrame, IRoll } from '../components/Frame'
+import isStrike from '../application/isStrike'
+import isSpare from '../application/isSpare'
 
 export default function Home() {
+  const [rolls, setRolls] = useState<IRoll[]>([]);
+
+  const frames = getFrames(rolls);
+  const currentFrameIndex = useMemo(() => getCurrentFrameIndex(rolls), [rolls]);
+  const currentFrame = frames[currentFrameIndex];
+  const isLastFrame = currentFrameIndex === 9;
+  const [roll1, roll2] = currentFrame;
+  const remainingPins = getRemainingPins((roll2 || roll1) as number);
+
+  const onClickRoll = (pins: number) => {
+    setRolls(state => {
+      const newState = [...state, pins];
+      if (pins === 10 && !isLastFrame) newState.push(0);
+      return [...newState];
+    });
+  }
+
+  const resetGame = () => setRolls([]);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -13,44 +40,36 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Bowling Game
         </h1>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
+       <div className={styles.framesContainer}>
+          {frames.map((frame, index) => {
+            return (
+              <Frame
+                key={`frame-${index}`}
+                frame={frame as IFrame}
+                pointsForFrame={getPointsForFrame(index, frames as IFrame[])}
+                showLastRoll={index === 9 && (isStrike(roll1) || isSpare(roll1, roll2))}
+              />
+            );
+          })}
+       </div>
+        
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+        <div>
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+            .map(pins => (
+              <button
+                key={pins}
+                className={styles.button}
+                disabled={remainingPins < pins}
+                onClick={() => onClickRoll(pins)}
+              >
+                {pins}
+              </button>
+            ))}
+          <button className={styles.button} onClick={resetGame}>Reset game</button>
         </div>
       </main>
 
