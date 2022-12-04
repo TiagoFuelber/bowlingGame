@@ -16,15 +16,15 @@ export default function getPointsForFrame(
 
       if (isStrike(roll1) && !isLast && !isLastButOne) {
         const nextIsStrike = isStrike(frames[index + 1][0]);
-        const nextFirstRoll = (frames[index + 1][0] || 0);
-        const nextSecondRoll = ((nextIsStrike) ? (frames[index + 2][0] || 0) : (frames[index + 1][1] || 0));
+        const nextFirstRoll = (frames[index + 1][0] ?? 0);
+        const nextSecondRoll = ((nextIsStrike) ? (frames[index + 2][0] ?? 0) : (frames[index + 1][1] ?? 0));
         const strikeBonus = 10 + nextFirstRoll + nextSecondRoll;
         points += strikeBonus;
       } else if (isStrike(roll1) && isLastButOne) {
         const [nextRoll1 = 0, nextRoll2 = 0, nextRoll3 = 0] = frames[index + 1];
         points += nextRoll1 + nextRoll2 + nextRoll3;  
       } else if (isSpare(roll1, roll2) && !isLast) {
-        const nextFirstRoll = (frames[index + 1][0] || 0);
+        const nextFirstRoll = (frames[index + 1][0] ?? 0);
         const spareBonus = 10 + nextFirstRoll;
         points += spareBonus;
       } else if (isLast) {

@@ -24,14 +24,14 @@ export default function Frame({ frame, pointsForFrame, showLastRoll }: IFramePro
   const checkSpareOrStrike = () => {
     if (isStrike(roll1) && !showLastRoll) return 'X';
     if (isSpare(roll1, roll2) && !showLastRoll) return '/';
-    return roll2 || 0;
+    return roll2 ?? 0;
   }
   
   return (
     <div>
-      <div className={getRollClassName(roll1)}>{roll1 || 0}</div>
+      <div className={getRollClassName(roll1)}>{roll1 ?? 0}</div>
       <div className={getRollClassName(roll2)}>{checkSpareOrStrike()}</div>
-      {showLastRoll && <div className={getRollClassName(roll3)}>{roll3 || 0}</div>}
+      {showLastRoll && <div className={getRollClassName(roll3)}>{roll3 ?? 0}</div>}
       <div className={styles.points}>{isPristine ? 0 : pointsForFrame}</div>
     </div>
   )
