@@ -1,5 +1,6 @@
 import { IFrame } from "../../components/Frame";
 import isLastFrame from "../isLastFrame";
+import isLastFrameButOne from "../isLastFrameButOne";
 import isSpare from "../isSpare";
 import isStrike from "../isStrike";
 
@@ -12,7 +13,7 @@ export default function getPointsForFrame(
     .reduce((points, item, index) => {
       const [roll1 = 0, roll2 = 0, roll3 = 0] = item;
       const isLast = isLastFrame(index);
-      const isLastButOne = index === 8;
+      const isLastButOne = isLastFrameButOne(index);
 
       if (isStrike(roll1) && !isLast && !isLastButOne) {
         const nextIsStrike = isStrike(frames[index + 1][0]);
